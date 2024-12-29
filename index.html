@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+
+    #orderForm {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="orderForm">
+    <h2>Order Form</h2>
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="phone" placeholder="Phone" required>
+    <input type="text" id="address" placeholder="Address" required>
+    <button type="submit" id="submitBtn">Submit Order</button>
+  </form>
+
+  <script>
+    // Declare the proxy and target URLs
+    const proxyUrl = 'http://localhost:8080/';
+    const targetUrl = 'https://script.google.com/macros/s/AKfycbxJ5QaO5B_zU-aOkCJH4309oVI-mrKHxh8Ox_RIeDm3Tmx14_RyhcOCV-xqwa4P7LHu/exec';
+
+    // Function to handle form submission
+    document.getElementById("submitBtn").addEventListener("click", function (event) {
+      event.preventDefault();  // Prevent the default form submission
+
+      // Initialize the orderData object with form values
+      const orderData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value
+      };
+
+      // Validate input fields
+      if (!orderData.name || !orderData.email || !orderData.phone || !orderData.address) {
+        alert("Please fill all the fields.");
+        return;
+      }
+
+      // Combine proxyUrl and targetUrl to handle CORS
+      const apiUrl = proxyUrl + targetUrl;
+
+      // Send the data to the API using fetch with the proxy URL
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData), // Send data as a JSON string
+        mode: 'cors' // Use CORS to bypass restrictions
+      })
+      .then(response => response.json()) // Parse JSON response
+      .then(data => {
+        console.log('Success:', data); // Handle success
+        alert('Order Submitted Successfully!');
+        // Optionally, reset form
+        document.getElementById("orderForm").reset();
+      })
+      .catch(error => {
+        console.error('Error:', error); // Handle error
+        alert('Error submitting order');
+      });
+    });
+  </script>
+
+</body>
+</html>
